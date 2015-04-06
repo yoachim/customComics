@@ -66,7 +66,7 @@ class getComics(object):
         after = page[spot:spot+300].replace('\n','')
         after = re.sub(".*src=.",'',after)
         after = re.sub('png.*', 'png', after)
-        result2 = "<img src="+after+"'>"
+        result2 = "<img src='"+after+"'>"
         return [result1, result2]
 
     def getJandMo(self):
