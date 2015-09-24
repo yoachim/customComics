@@ -125,6 +125,28 @@ class getComics(object):
         comic =re.sub('.*<a rel="lightbox" href=','<img src=',comic)
         return [comic]
 
+    def getFowl(self):
+        req = urllib2.Request('http://www.fowllanguagecomics.com/', headers=self.hdr)
+        page = urllib2.urlopen(req).read()
+        spot = page.find('id="comic"')
+        comic = page[spot:spot+500]
+        spot2= comic.find('<img src="')
+        comic = comic[spot2:]
+        spot2 = comic.find("</div>")
+        result = [comic[:spot2]]
+
+        if "Bonus Panel" in page:
+            spot = page.find('Bonus Panel"><img src')
+            comic = page[spot:spot+400]
+            spot2 = comic.find('<img src')
+            comic = comic[spot2:]
+            spot2 = comic.find('/>')
+            comic = comic[:spot2+2]
+            result.append(comic)
+
+        return result
+
+
 
 if __name__ == "__main__":
 
