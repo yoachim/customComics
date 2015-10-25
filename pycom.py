@@ -24,10 +24,13 @@ class getComics(object):
     def run(self):
         content = ''
         for func in self.getFuncs:
-            result = func()
-            for res in result:
-                content += '<br>'+res +'\n'
-            content += '<hr>'
+            try:
+                result = func()
+                for res in result:
+                    content += '<br>'+res +'\n'
+                content += '<hr>'
+            except:
+                pass
         return content
 
     def getDilbert(self):
@@ -127,7 +130,10 @@ class getComics(object):
 
     def getFowl(self):
         req = urllib2.Request('http://www.fowllanguagecomics.com/', headers=self.hdr)
-        page = urllib2.urlopen(req).read()
+        try:
+            page = urllib2.urlopen(req).read()
+        except urllib2.HTTPError, e:
+            page= e.fp.read()
         spot = page.find('id="comic"')
         comic = page[spot:spot+500]
         spot2= comic.find('<img src="')
