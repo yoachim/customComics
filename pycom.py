@@ -43,12 +43,12 @@ class getComics(object):
         return [result]
 
     def getDoons(self):
-        result = '<IMG SRC="http://images.ucomics.com/comics/db/20'
-        if self.today.weekday() == 6:
-            filetype='.jpg'
-        else:
-            filetype = '.gif'
-        result = result + self.today.strftime('%y/db%y%m%d')+filetype+'">'
+        page = urllib2.urlopen('http://doonesbury.slate.com/').read()
+        spot = page.find('src="http://assets.amuniversal')
+        page = page[spot-20:spot+100].replace("\n","")
+        page = re.sub('.*http', 'http', page)
+        page = re.sub('".*','',page)
+        result = '<IMG SRC="'+page+'">'
         return [result]
 
     #def getNonSeq(self):
