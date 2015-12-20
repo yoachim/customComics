@@ -42,6 +42,17 @@ class getComics(object):
         result = '<IMG SRC="'+dil_page+'">'
         return [result]
 
+    def getMraDilbert(self):
+        page = urllib2.urlopen('http://mradilbert.tumblr.com/').read()
+        spot = page.find('<article class="post photo">')
+        page = page[spot-20:spot+300].replace("\n","")
+        spot1 = page.find('<img src')
+        page = page[spot1:]
+        spot2 = page.find('>')
+        page = page[:spot2+1]
+        return [page]
+
+
     def getDoons(self):
         page = urllib2.urlopen('http://doonesbury.slate.com/').read()
         spot = page.find('src="http://assets.amuniversal')
@@ -76,7 +87,7 @@ class getComics(object):
         req = urllib2.Request('http://www.jesusandmo.net', headers=self.hdr)
         page = urllib2.urlopen(req).read()
         spot = page.find('/strips')
-        comic = page[spot-40:spot+80].replace('\n','')
+        comic = page[spot-40:spot+100].replace('\n','')
         comic = re.sub('.*<img','<img',comic)
         comic = re.sub('>.*','>',comic)
         return [comic]
@@ -126,6 +137,9 @@ class getComics(object):
         comic = re.sub('<span class.*','',comic)
 
         comic =re.sub('.*<a rel="lightbox" href=','<img src=',comic)
+        spot = comic.find('<')
+        comic = comic[spot:]
+        comic = comic[:comic.find('>')+1]
         return [comic]
 
     def getFowl(self):
