@@ -142,6 +142,15 @@ class getComics(object):
         comic = comic[:comic.find('>')+1]
         return [comic]
 
+    def getSarah(self):
+        page= urllib2.urlopen('http://sarahcandersen.com/').read()
+        spot = page.find('View high resolution')
+        comic = page[spot-200:spot].replace('\n','')
+        comic = re.sub('.*a href="','',comic)
+        comic = re.sub('".*', '',comic)
+        comic = '<img src="'+comic+'">'
+        return [comic]
+
     def getFowl(self):
         req = urllib2.Request('http://www.fowllanguagecomics.com/', headers=self.hdr)
         try:
