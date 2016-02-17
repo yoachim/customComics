@@ -164,13 +164,12 @@ class getComics(object):
         spot2 = comic.find("</div>")
         result = [comic[:spot2]]
 
-        if "Bonus Panel" in page:
-            spot = page.find('Bonus Panel"><img src')
-            comic = page[spot:spot+400]
-            spot2 = comic.find('<img src')
-            comic = comic[spot2:]
-            spot2 = comic.find('/>')
-            comic = comic[:spot2+2]
+        if "bonus.jpg" in page:
+            spot = page.find('bonus.jpg')
+            comic = page[spot-200:spot+15]
+            comic = re.sub('.*src="', '', comic)
+            comic = re.sub('\?.*','',comic)
+            comic = '<img src="' + comic + '">'
             result.append(comic)
 
         return result
