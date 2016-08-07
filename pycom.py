@@ -74,7 +74,7 @@ class getComics(object):
         main_comic = page[spot:spot+200].replace('\n','')
         main_comic = re.sub( '.*src="','',main_comic)
         main_comic = re.sub('png.*', 'png', main_comic)
-        result1 = "<img src='http://www.smbc-comics.com/"+main_comic+"'>"
+        result1 = "<img src='"+main_comic+"'>"
 
         spot = page.find('extracomic')
         after = page[spot:spot+300].replace('\n','')
@@ -133,13 +133,14 @@ class getComics(object):
     def getTWW(self):
         page = urllib2.urlopen('http://www.dailykos.com/blog/Comics').read()
         spot = page.find('TMW')
+        
         comic = page[spot-100:spot+75].replace('\n','')
-        comic = re.sub('<span class.*','',comic)
-
-        comic =re.sub('.*<a rel="lightbox" href=','<img src=',comic)
-        spot = comic.find('<')
-        comic = comic[spot:]
-        comic = comic[:comic.find('>')+1]
+        spot2 = comic.find('http:')
+        comic = comic[spot2:]
+        spot2 = comic.find(' src')
+        comic = comic[:spot2]
+        comic = '<img src="'+comic+'">'
+        comic.replace("'", "")
         return [comic]
 
     def getSarah(self):
@@ -157,19 +158,35 @@ class getComics(object):
             page = urllib2.urlopen(req).read()
         except urllib2.HTTPError, e:
             page= e.fp.read()
-        spot = page.find('id="comic"')
-        comic = page[spot:spot+500]
-        spot2= comic.find('<img src="')
+        spot = page.find('content/uploads/%i' % datetime.date.today().year)
+        comic = page[spot-75:spot+500]
+        spot2= comic.find('content="http:')
         comic = comic[spot2:]
-        spot2 = comic.find("</div>")
-        result = [comic[:spot2]]
+        spot2= comic.find('http:')
+        comic = comic[spot2:]
+        spot2 = comic.find('"')
+        comic = comic[:spot2]
+        result = ['<img src="'+comic+'">']
 
-        if "bonus.jpg" in page:
-            spot = page.find('bonus.jpg')
-            comic = page[spot-200:spot+15]
-            comic = re.sub('.*src="', '', comic)
-            comic = re.sub('\?.*','',comic)
-            comic = '<img src="' + comic + '">'
+        if "Bonus Panel" in page:
+            spot = page.find('Bonus Panel')
+            url = page[spot-100:spot]
+            spot2 = url.find('http')
+            url = url[spot2:]
+            spot2 = url.find('"')
+            url = url[:spot2]
+            req = urllib2.Request(url, headers=self.hdr)
+            page = urllib2.urlopen(req).read()
+
+            spot = page.find('content/uploads/%i' % datetime.date.today().year)
+            comic = page[spot-75:spot+500]
+            spot2= comic.find('content="http:')
+            comic = comic[spot2:]
+            spot2= comic.find('http:')
+            comic = comic[spot2:]
+            spot2 = comic.find('"')
+            comic = comic[:spot2]
+            comic = '<img src="'+comic+'">'
             result.append(comic)
 
         return result
