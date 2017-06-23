@@ -42,15 +42,6 @@ class getComics(object):
         result = '<IMG SRC="'+dil_page+'">'
         return [result]
 
-    def getMraDilbert(self):
-        page = urllib2.urlopen('http://mradilbert.tumblr.com/').read()
-        spot = page.find('<article class="post photo">')
-        page = page[spot-20:spot+300].replace("\n","")
-        spot1 = page.find('<img src')
-        page = page[spot1:]
-        spot2 = page.find('>')
-        page = page[:spot2+1]
-        return [page]
 
 
     def getDoons(self):
@@ -80,14 +71,16 @@ class getComics(object):
         after = page[spot:spot+300].replace('\n','')
         after = re.sub(".*src=.",'',after)
         after = re.sub('png.*', 'png', after)
+        if after[0:2] == '//':
+            after = 'http:' + after
         result2 = "<img src='"+after+"'>"
         return [result1, result2]
 
     def getJandMo(self):
         req = urllib2.Request('http://www.jesusandmo.net', headers=self.hdr)
         page = urllib2.urlopen(req).read()
-        spot = page.find('/strips')
-        comic = page[spot-40:spot+100].replace('\n','')
+        spot = page.find('div id="comic"')
+        comic = page[spot:spot+200].replace('\n','')
         comic = re.sub('.*<img','<img',comic)
         comic = re.sub('>.*','>',comic)
         return [comic]
@@ -135,7 +128,7 @@ class getComics(object):
         spot = page.find('TMW')
         
         comic = page[spot-100:spot+75].replace('\n','')
-        spot2 = comic.find('http:')
+        spot2 = comic.find('https:')
         comic = comic[spot2:]
         spot2 = comic.find(' src')
         comic = comic[:spot2]
