@@ -65,7 +65,7 @@ class getComics(object):
         main_comic = page[spot:spot+200].replace('\n','')
         main_comic = re.sub( '.*src="','',main_comic)
         main_comic = re.sub('png.*', 'png', main_comic)
-        result1 = "<img src='"+main_comic+"'>"
+        result1 = "<img src='http://www.smbc-comics.com"+main_comic+"'>"
 
         spot = page.find('extracomic')
         after = page[spot:spot+300].replace('\n','')
